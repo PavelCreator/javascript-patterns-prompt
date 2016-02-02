@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Factory</title>
+</head>
+<body>
+<a href="index.html">To patterns list</a>
+<script>
+
+  /*
+   Основной задачей фабрики в статически типизируемых языках является создание разных объектов с одинаковым интерфейсом, в зависимости от ситуаций.
+   Фабрика может проводить какую-то первичную инициализацию объектов.
+   Предположим, у нас есть объекты Daddy, Mammy, и Son, создавая их с помощью фабрики мы можем просто сказать — familyfactory.createSon(); familyfactory.createDaddy(), а уж то, что они оба рыжие и 210см роста, за нас решит фабрика — эти параметры мы не задаем
+   */
+
+  //В примере мы создаём абстрактную фигуру и три наследуемые геометрические фигуры
+  //Сначала задаются объекты-констукторы, потом фабрики для них, потом инстансы
+
+  //Для того чтобы фабрика могла создавать какие-то объекты, для них сначала неплохо бы задать конструкторы
+  var Shapes = {
+    Circle: function (param) {
+      console.log("new " + param.color + " circle created with radius " + param.radius + "px");
+    },
+    Square: function (param) {
+      console.log("new " + param.color + " square created with " + param.side + "px on a side ");
+    },
+    Triangle: function (param) {
+      console.log("new " + param.color + " triangle created with " + param.side + "px on a side ");
+    }
+  }
+
+  //А теперь можно сделать и саму фабрику
+  function ShapeFactory(size, color) {
+    this.size = size;
+    this.color = color;
+  }
+
+  ShapeFactory.prototype = {
+    constructor: ShapeFactory,
+
+    makeCircle: function () {
+      return new Shapes.Circle({radius: this.size / 2, color: this.color});
+    },
+    makeSquare: function () {
+      return new Shapes.Square({side: this.size, color: this.color});
+    },
+    makeTrinagle: function () {
+      return new Shapes.Triangle({side: this.size, color: this.color});
+    }
+  }
+
+  //Создаём инстансы
+  var factory = new ShapeFactory(100, "red")
+  factory.makeSquare();//new red square created with 100px on a side
+  factory.makeTrinagle();//new red triangle created with 100px on a side
+  factory.makeCircle();//new red circle created with radius 50px
+
+
+
+</script>
+</body>
+</html>

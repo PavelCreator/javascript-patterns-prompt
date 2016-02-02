@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Decorator 2</title>
+</head>
+<body>
+<a href="index.html">To patterns list</a>
+<script>
+  //Parent object
+  function Ball(param) {
+    this._radius = param.radius;
+    this._color = param.color;
+  }
+  Ball.prototype =
+  {
+    constructor: Ball,
+
+    INCREMENTATION_STEP: 5,
+
+    draw: function () {
+      console.log("ball drawn with radius:" + this._radius + " and color: " + this._color)
+    },
+    inc: function () {
+      this._radius += this.INCREMENTATION_STEP
+    }
+  }
+  new Ball({radius: 100, color: "red"});
+
+  //Второй способ реализации — легковесный
+
+  function MakeStripedBall(ball) {
+    var function_name = "draw";
+    var prev_func = ball[function_name];
+
+    ball[function_name] = function () {
+      prev_func.apply(this, arguments)
+      console.log("and with stripes");
+    };
+
+    return ball;
+  }
+  function MakeSpeckledBall(ball) {
+    var function_name = "draw";
+    var prev_func = ball[function_name];
+
+    ball[function_name] = function () {
+      prev_func.apply(this, arguments)
+      console.log("and with dots!");
+    };
+
+    return ball;
+  }
+  /*
+  Мы передаём только то что нужно в родительский объект
+  */
+
+  var ball3 = MakeStripedBall(MakeSpeckledBall(new Ball({radius: 150, color: "blue"})));
+
+  ball3.draw();
+  /*
+   ball drawn with radius:150 and color: blue - из родительского объекта
+   decorator2.html:48 and with dots! - получаем из MakeSpeckledBall
+   decorator2.html:37 and with stripes - получаем из MakeStripedBall
+   */
+  ball3.inc();
+  ball3.draw();
+
+</script>
+</body>
+</html>

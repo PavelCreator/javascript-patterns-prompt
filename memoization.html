@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Memoization</title>
+</head>
+<body>
+<a href="index.html">To patterns list</a>
+<script>
+  /*
+   Для функции которая может долго вычислять результат, мы создаем небольшой кэш ответов.
+   Работает это, разумеется, только в том случае, когда при одинаковых входных параметрах результат функции тоже должен быть одинаковый.
+   */
+
+  //Создаем какую-нибудь медленную функцию, которая использует эту технику
+
+  function calculation(x, y) {
+    var key = x.toString() + "|" + y.toString();
+    var result = 0;
+
+    if (!calculation.memento[key]) {
+      for (var i = 0; i < y; ++i) result += x;
+      calculation.memento[key] = result;
+    }
+    return calculation.memento[key];
+  }
+  calculation.memento = {};
+
+  console.profile();
+  console.log('result:' + calculation(2, 100000000));
+  console.profileEnd();
+
+  console.profile();
+  console.log('result:' + calculation(2, 100000000));
+  console.profileEnd();
+
+  console.profile();
+  console.log('result:' + calculation(2, 10000000));
+  console.profileEnd();
+
+  /*
+   Если этот код теперь запустить в FF с Firebug, то мы увидим следующую статистику:
+
+   626.739ms -   result:200000000
+   0.012ms -     result:200000000
+   63.055ms -    result:20000000
+
+   При повторном запросе мы сэкономили кучу времени.
+
+   */
+
+</script>
+</body>
+</html>
